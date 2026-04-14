@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vibrant Wellness — Splitit Integration Demo</title>
+<link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'Open Sans', sans-serif;
+    background: #f2f6f8;
+    color: #1a1a1a;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* ── Header ── */
+  header {
+    background: #fff;
+    border-bottom: 1px solid #e5e7eb;
+    padding: 0 40px;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .logo {
+    font-size: 17px;
+    font-weight: 700;
+    color: #1a1a1a;
+    display: flex;
+    align-items: center;
+    gap: 7px;
+  }
+  .logo span { color: #00b4b4; }
+  .demo-tag {
+    background: #f0fafa;
+    color: #00908f;
+    border: 1px solid #c8eeee;
+    font-size: 11.5px;
+    font-weight: 700;
+    padding: 4px 12px;
+    border-radius: 20px;
+    letter-spacing: .4px;
+  }
+
+  /* ── Cards ── */
+  .cards-section {
+    flex: 1;
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 52px 40px 60px;
+    width: 100%;
+  }
+  .cards-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+  }
+
+  .portal-card {
+    background: #fff;
+    border-radius: 14px;
+    border: 2px solid #e0e3e8;
+    padding: 32px 28px 28px;
+    text-decoration: none;
+    color: inherit;
+    display: flex;
+    flex-direction: column;
+    transition: all .22s;
+    position: relative;
+    overflow: hidden;
+  }
+  .portal-card:hover {
+    border-color: #00b4b4;
+    box-shadow: 0 8px 28px rgba(0,180,180,.12);
+    transform: translateY(-2px);
+  }
+  .portal-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 4px;
+  }
+  .portal-card.provider::before { background: #00b4b4; }
+  .portal-card.patient::before  { background: #1b3a4b; }
+
+  .card-icon {
+    width: 52px;
+    height: 52px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    margin-bottom: 18px;
+    flex-shrink: 0;
+  }
+  .portal-card.provider .card-icon { background: #f0fafa; }
+  .portal-card.patient  .card-icon { background: #edf2f5; }
+
+  .card-label {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+  .portal-card.provider .card-label { color: #00b4b4; }
+  .portal-card.patient  .card-label { color: #1b3a4b; }
+
+  .card-title {
+    font-size: 20px;
+    font-weight: 800;
+    margin-bottom: 10px;
+    color: #1a1a1a;
+  }
+  .card-desc {
+    font-size: 13.5px;
+    color: #666;
+    line-height: 1.65;
+    flex: 1;
+  }
+
+  .card-features {
+    margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .feature-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12.5px;
+    color: #555;
+  }
+  .feature-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+  .portal-card.provider .feature-dot { background: #00b4b4; }
+  .portal-card.patient  .feature-dot { background: #1b3a4b; }
+
+  .card-cta {
+    margin-top: 24px;
+    padding: 11px 0;
+    border-radius: 8px;
+    font-size: 13.5px;
+    font-weight: 700;
+    text-align: center;
+    border: none;
+    cursor: pointer;
+    font-family: inherit;
+    transition: background .2s;
+  }
+  .portal-card.provider .card-cta {
+    background: #00b4b4;
+    color: #fff;
+  }
+  .portal-card.provider:hover .card-cta { background: #009e9e; }
+  .portal-card.patient .card-cta {
+    background: #1b3a4b;
+    color: #fff;
+  }
+  .portal-card.patient:hover .card-cta { background: #2c5468; }
+
+  /* ── Info strip ── */
+  .info-strip {
+    background: #fff;
+    border-top: 1px solid #e5e7eb;
+    padding: 20px 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 32px;
+    flex-wrap: wrap;
+  }
+  .info-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12.5px;
+    color: #666;
+  }
+  .info-item .bullet {
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    background: #00b4b4;
+    flex-shrink: 0;
+  }
+
+  /* ── Footer ── */
+  footer {
+    background: #fff;
+    border-top: 1px solid #e5e7eb;
+    padding: 16px 40px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 12px;
+    color: #aaa;
+  }
+  footer .splitit-credit {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+</style>
+</head>
+<body>
+
+<!-- ── Header ── -->
+<header>
+  <div class="logo">🧬 <span>Vibrant</span>Wellness</div>
+  <span class="demo-tag">SPLITIT INTEGRATION DEMO</span>
+</header>
+
+<!-- ── Portal Cards ── -->
+<div class="cards-section">
+  <div class="cards-row">
+
+    <!-- Provider Portal -->
+    <a class="portal-card provider" href="provider-portal.html">
+      <div class="card-icon">🏥</div>
+      <div class="card-label">Provider Portal</div>
+      <div class="card-title">Provider Checkout</div>
+      <div class="card-desc">For providers placing orders on behalf of patients. Select an installment plan at checkout under "Patient Pay Now."</div>
+      <div class="card-features">
+        <div class="feature-item"><span class="feature-dot"></span>Pay in Full or Pay in Installments sub-toggle</div>
+        <div class="feature-item"><span class="feature-dot"></span>2, 3, or 4-month plan picker</div>
+        <div class="feature-item"><span class="feature-dot"></span>Dynamic CTA with per-month amount</div>
+        <div class="feature-item"><span class="feature-dot"></span>Secure redirect to Splitit payment page</div>
+      </div>
+      <div class="card-cta">View Provider Portal →</div>
+    </a>
+
+    <!-- Patient Portal -->
+    <a class="portal-card patient" href="patient-portal.html">
+      <div class="card-icon">👤</div>
+      <div class="card-label">Patient Portal</div>
+      <div class="card-title">Patient Payment</div>
+      <div class="card-desc">For patients paying their own lab order. "Pay in Installments" is a top-level payment method alongside card, BNPL, and Google Pay.</div>
+      <div class="card-features">
+        <div class="feature-item"><span class="feature-dot"></span>Top-level payment option with NEW badge</div>
+        <div class="feature-item"><span class="feature-dot"></span>2, 3, or 4-month plan picker</div>
+        <div class="feature-item"><span class="feature-dot"></span>Dynamic CTA with per-month amount</div>
+        <div class="feature-item"><span class="feature-dot"></span>Secure redirect to Splitit payment page</div>
+      </div>
+      <div class="card-cta">View Patient Portal →</div>
+    </a>
+
+  </div>
+</div>
+
+<!-- ── Info Strip ── -->
+<div class="info-strip">
+  <div class="info-item"><span class="bullet"></span>No credit checks — uses patient's existing card</div>
+  <div class="info-item"><span class="bullet"></span>Vibrant receives full payment upfront from Splitit</div>
+  <div class="info-item"><span class="bullet"></span>Zero default risk to Vibrant</div>
+  <div class="info-item"><span class="bullet"></span>Splitit hosts all PCI-sensitive card entry</div>
+</div>
+
+<!-- ── Footer ── -->
+<footer>
+  <span>© 2026 Vibrant Wellness · Demo Environment</span>
+  <span class="splitit-credit">Powered by Splitit</span>
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Patient Portal — Payment</title>
+<link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --navy: #1b3a4b;
+    --navy-light: #2c5468;
+    --navy-bg: #f2f6f8;
+    --navy-border: #c4d5de;
+    --navy-hover-bg: #f7f9fb;
+    --navy-selected-bg: #edf2f5;
+    --gray-border: #e0e2e6;
+    --gray-text: #666;
+    --dark-text: #1a1a1a;
+    --white: #fff;
+    --gold-accent: #d4a843;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Open Sans', sans-serif; background: var(--white); color: #333; font-size: 15px; }
+
+  /* ── Back to Home bar ── */
+  .back-bar {
+    background: var(--navy-bg);
+    border-bottom: 1px solid var(--navy-border);
+    padding: 10px 40px;
+    display: flex;
+    align-items: center;
+  }
+  .back-bar a {
+    font-size: 12.5px;
+    font-weight: 600;
+    color: var(--navy);
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    opacity: .75;
+    transition: opacity .15s;
+  }
+  .back-bar a:hover { opacity: 1; }
+
+  .page { max-width: 1060px; margin: 0 auto; padding: 32px 40px 80px; }
+
+  .accession { text-align: right; font-size: 14px; color: var(--gray-text); margin-bottom: 6px; }
+  .order-from { font-size: 16px; color: #5a7a8a; margin-bottom: 18px; }
+
+  .warning-banner {
+    background: #fef9ec; border: 1px solid #f5e6b8; border-radius: 8px;
+    padding: 14px 18px; display: flex; gap: 12px; align-items: flex-start;
+    font-size: 13.5px; color: #555; line-height: 1.5; margin-bottom: 24px;
+  }
+  .warning-banner .icon {
+    background: #e8a735; color: var(--white); width: 26px; height: 26px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center; font-size: 14px;
+    flex-shrink: 0; font-weight: 700;
+  }
+
+  .payment-overview {
+    background: var(--navy); border-radius: 10px; padding: 22px 28px 20px; color: var(--white);
+    margin-bottom: 36px;
+  }
+  .payment-overview .header {
+    display: flex; justify-content: space-between; align-items: baseline;
+    padding-bottom: 14px; border-bottom: 2px solid var(--gold-accent); margin-bottom: 14px;
+  }
+  .payment-overview .header h2 { font-size: 20px; font-weight: 800; }
+  .payment-overview .header .total { font-size: 22px; font-weight: 800; color: var(--white); }
+  .payment-overview .line {
+    display: flex; justify-content: space-between; padding: 8px 0;
+    font-size: 14px; color: #ccdde6;
+    border-bottom: 1px dotted rgba(255,255,255,.15);
+  }
+  .payment-overview .line:last-child { border-bottom: none; }
+  .payment-overview .line .label { font-weight: 600; }
+
+  .section-title { font-size: 22px; font-weight: 800; color: var(--navy); margin-bottom: 6px; }
+  .section-divider { height: 2px; background: linear-gradient(90deg, var(--navy), transparent); margin-bottom: 22px; }
+  .subsection-title { font-size: 15px; font-weight: 700; color: #333; margin-bottom: 14px; }
+
+  .radio-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px; }
+  .radio-card {
+    border: 2px solid var(--gray-border); border-radius: 10px; padding: 16px 20px;
+    display: flex; align-items: center; gap: 14px; cursor: pointer; transition: all .2s;
+    background: var(--white); position: relative;
+  }
+  .radio-card:hover { border-color: var(--navy-border); background: var(--navy-hover-bg); }
+  .radio-card.selected { border-color: var(--navy); background: var(--navy-selected-bg); }
+  .radio-card .radio {
+    width: 22px; height: 22px; border-radius: 50%; border: 2px solid #ccc;
+    display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+    transition: all .2s;
+  }
+  .radio-card.selected .radio { border-color: var(--navy); background: var(--navy); }
+  .radio-card.selected .radio::after {
+    content: ''; width: 8px; height: 8px; border-radius: 50%; background: var(--white);
+  }
+  .radio-card .card-icon { font-size: 22px; flex-shrink: 0; }
+  .radio-card .card-label { font-size: 14px; font-weight: 600; color: #333; }
+  .radio-card .card-label-accent { font-size: 14px; font-weight: 700; color: var(--navy); }
+
+  .gpay-icon { font-size: 18px; font-weight: 700; color: #5f6368; display: flex; align-items: center; gap: 2px; }
+  .gpay-icon .g { color: #4285f4; }
+
+  .paylater-section { margin-top: 20px; }
+  .paylater-title { font-size: 15px; font-weight: 700; color: var(--navy); margin-bottom: 14px; }
+
+  .installment-picker { margin-top: 20px; animation: fadeUp .35s ease; }
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .installment-label { font-size: 15px; font-weight: 700; color: var(--navy); margin-bottom: 14px; }
+
+  .installment-options { display: flex; gap: 12px; margin-bottom: 18px; }
+  .inst-card {
+    flex: 1; border: 2px solid var(--gray-border); border-radius: 12px; padding: 20px 14px;
+    text-align: center; cursor: pointer; transition: all .2s; background: var(--white);
+    position: relative;
+  }
+  .inst-card:hover { border-color: var(--navy-border); background: var(--navy-hover-bg); }
+  .inst-card.selected {
+    border-color: var(--navy); background: var(--navy-selected-bg);
+    box-shadow: 0 0 0 1px var(--navy);
+  }
+  .inst-card.selected::after {
+    content: '✓'; position: absolute; top: 10px; right: 12px;
+    background: var(--navy); color: var(--white); width: 22px; height: 22px;
+    border-radius: 50%; font-size: 12px; display: flex; align-items: center; justify-content: center;
+  }
+  .inst-card .num { font-size: 28px; font-weight: 800; color: var(--navy); line-height: 1; }
+  .inst-card .num-label { font-size: 12px; color: #888; margin-top: 2px; font-weight: 600; }
+  .inst-card .per-amount { font-size: 17px; font-weight: 800; color: var(--dark-text); margin-top: 12px; }
+  .inst-card .per-label { font-size: 11.5px; color: #999; margin-top: 1px; }
+
+  .inst-summary {
+    background: var(--navy-bg); border-radius: 10px; padding: 16px 20px;
+    font-size: 14px; color: #555; line-height: 1.7;
+  }
+  .inst-summary strong { color: var(--navy); }
+
+  .inst-redirect {
+    background: #fefce8; border: 1px solid #fde68a; border-radius: 10px;
+    padding: 14px 18px; font-size: 13px; color: #78350f; margin-top: 14px;
+    display: flex; gap: 10px; align-items: flex-start; line-height: 1.5;
+  }
+  .inst-redirect .lock { font-size: 17px; flex-shrink: 0; }
+
+  .inst-powered { text-align: center; margin-top: 14px; font-size: 11px; color: #bbb; }
+
+  .new-badge {
+    display: inline-block; background: #ef4444; color: var(--white); font-size: 9px; font-weight: 800;
+    padding: 2px 7px; border-radius: 6px; margin-left: 8px; vertical-align: middle;
+    letter-spacing: .5px;
+  }
+
+  .pay-btn-area { margin-top: 32px; text-align: center; }
+  .pay-btn {
+    background: var(--navy); color: var(--white); border: none; border-radius: 10px;
+    padding: 16px 48px; font-size: 16px; font-weight: 700; cursor: pointer;
+    font-family: inherit; transition: all .2s; min-width: 320px;
+  }
+  .pay-btn:hover { background: var(--navy-light); }
+</style>
+</head>
+<body>
+
+<!-- ── Back to Home ── -->
+<div class="back-bar">
+  <a href="index.html">← Demo Home</a>
+</div>
+
+<div class="page">
+
+  <div class="accession">Accession ID: 2604136522</div>
+  <div class="order-from">Order from Test Client 3 TCC, Test Client, MD</div>
+
+  <div class="warning-banner">
+    <div class="icon">⚠</div>
+    <div>Once payment is completed, address changes to New York State will not be allowed since some of your test is temporarily not available to residents of New York.</div>
+  </div>
+
+  <div class="payment-overview">
+    <div class="header">
+      <h2>Payment Overview</h2>
+      <div class="total">Total: $665.00</div>
+    </div>
+    <div class="line"><span class="label">Subtotal</span><span>$650.00</span></div>
+    <div class="line"><span class="label">Consultation Fee</span><span>$15.00</span></div>
+  </div>
+
+  <h2 class="section-title">Payment Information</h2>
+  <div class="section-divider"></div>
+  <div class="subsection-title">Payment Method</div>
+
+  <div class="radio-grid" id="methodGrid">
+    <div class="radio-card" onclick="selectMethod('card', this)">
+      <div class="radio"></div>
+      <span class="card-icon">💳</span>
+      <span class="card-label">Credit / Debit Card</span>
+    </div>
+    <div class="radio-card" onclick="selectMethod('monthly', this)">
+      <div class="radio"></div>
+      <span style="background:var(--navy-selected-bg); color:var(--navy); font-weight:800; font-size:16px; padding:4px 9px; border-radius:6px;">📅</span>
+      <span class="card-label">Pay in Installments <span class="new-badge">NEW</span></span>
+    </div>
+    <div class="radio-card" onclick="selectMethod('bnpl', this)">
+      <div class="radio"></div>
+      <span class="card-label-accent">Buy Now Pay Later</span>
+    </div>
+    <div class="radio-card" onclick="selectMethod('gpay', this)">
+      <div class="radio"></div>
+      <span class="gpay-icon"><span class="g">G</span> Pay</span>
+    </div>
+  </div>
+
+  <!-- Buy Now Pay Later sub-section -->
+  <div id="bnpl-section" style="display:none;">
+    <div class="paylater-section">
+      <div class="paylater-title">Pay Later Option</div>
+      <div class="radio-grid" id="bnplGrid">
+        <div class="radio-card" onclick="selectBnpl('klarna', this)">
+          <div class="radio"></div>
+          <span style="background:#ffb3c7; color:#fff; font-weight:800; font-size:14px; padding:4px 10px; border-radius:6px;">K.</span>
+          <span class="card-label">Klarna</span>
+        </div>
+        <div class="radio-card" onclick="selectBnpl('afterpay', this)">
+          <div class="radio"></div>
+          <span style="background:#c6ffe6; color:#00c28e; font-weight:800; font-size:18px; padding:2px 8px; border-radius:6px;">↻</span>
+          <span class="card-label">After Pay</span>
+        </div>
+      </div>
+    </div>
+    <div id="bnpl-klarna" class="bnpl-detail" style="display:none;">
+      <div class="inst-summary" style="margin-top:16px;">You'll be redirected to Klarna to complete your purchase.</div>
+    </div>
+    <div id="bnpl-afterpay" class="bnpl-detail" style="display:none;">
+      <div class="inst-summary" style="margin-top:16px;">You'll be redirected to Afterpay to complete your purchase.</div>
+    </div>
+  </div>
+
+  <!-- Monthly Payments section -->
+  <div id="monthly-section" style="display:none;">
+    <div class="installment-picker">
+      <div class="installment-label">How would you like to split your payment?</div>
+      <div class="installment-options">
+        <div class="inst-card" onclick="selectPlan(this, 2)" data-n="2">
+          <div class="num">2</div>
+          <div class="num-label">payments</div>
+          <div class="per-amount">$332.50</div>
+          <div class="per-label">per month</div>
+        </div>
+        <div class="inst-card selected" onclick="selectPlan(this, 3)" data-n="3">
+          <div class="num">3</div>
+          <div class="num-label">payments</div>
+          <div class="per-amount">$221.67</div>
+          <div class="per-label">per month</div>
+        </div>
+        <div class="inst-card" onclick="selectPlan(this, 4)" data-n="4">
+          <div class="num">4</div>
+          <div class="num-label">payments</div>
+          <div class="per-amount">$166.25</div>
+          <div class="per-label">per month</div>
+        </div>
+      </div>
+
+      <div class="inst-summary" id="instSummary">
+        <strong>$221.67 per month</strong> × 3 payments = $665.00 total<br>
+        Your first payment is collected today. The rest are charged monthly — no interest, no hidden fees.
+      </div>
+
+      <div class="inst-redirect">
+        <span class="lock">🔒</span>
+        <span>You'll be taken to a secure page to enter your card details and confirm the plan. Once done, you'll return here automatically.</span>
+      </div>
+
+      <div class="inst-powered">Powered by Splitit</div>
+    </div>
+  </div>
+
+  <!-- Credit card section -->
+  <div id="card-section" style="display:none; margin-top:20px;">
+    <div class="inst-summary">Enter your credit or debit card details below.</div>
+  </div>
+
+  <!-- GPay section -->
+  <div id="gpay-section" style="display:none; margin-top:20px;">
+    <div class="inst-summary">You'll be redirected to Google Pay to complete your purchase.</div>
+  </div>
+
+  <div class="pay-btn-area">
+    <button class="pay-btn" id="payBtn" onclick="handlePay()">Pay $665.00</button>
+  </div>
+
+</div>
+
+<script>
+const TOTAL = 665.00;
+let currentMethod = null;
+
+function selectMethod(method, el) {
+  currentMethod = method;
+  document.querySelectorAll('#methodGrid .radio-card').forEach(c => c.classList.remove('selected'));
+  el.classList.add('selected');
+
+  document.getElementById('bnpl-section').style.display = method === 'bnpl' ? 'block' : 'none';
+  document.getElementById('card-section').style.display = method === 'card' ? 'block' : 'none';
+  document.getElementById('gpay-section').style.display = method === 'gpay' ? 'block' : 'none';
+  document.getElementById('monthly-section').style.display = method === 'monthly' ? 'block' : 'none';
+
+  method === 'monthly' ? updatePlanUI() : resetBtn();
+}
+
+function selectBnpl(option, el) {
+  document.querySelectorAll('#bnplGrid .radio-card').forEach(c => c.classList.remove('selected'));
+  el.classList.add('selected');
+  document.querySelectorAll('.bnpl-detail').forEach(d => d.style.display = 'none');
+  const detail = document.getElementById('bnpl-' + option);
+  if (detail) detail.style.display = 'block';
+  resetBtn();
+}
+
+function selectPlan(el) {
+  document.querySelectorAll('.inst-card').forEach(c => c.classList.remove('selected'));
+  el.classList.add('selected');
+  updatePlanUI();
+}
+
+function updatePlanUI() {
+  const sel = document.querySelector('.inst-card.selected');
+  if (!sel) return;
+  const n = parseInt(sel.dataset.n);
+  const perMonth = (TOTAL / n).toFixed(2);
+
+  document.getElementById('instSummary').innerHTML =
+    `<strong>$${perMonth} per month</strong> × ${n} payments = $${TOTAL.toFixed(2)} total<br>Your first payment is collected today. The rest are charged monthly — no interest, no hidden fees.`;
+
+  document.getElementById('payBtn').textContent = `Set Up ${n}-Month Plan · $${perMonth}/mo`;
+}
+
+function resetBtn() {
+  document.getElementById('payBtn').textContent = `Pay $${TOTAL.toFixed(2)}`;
+}
+
+function handlePay() {
+  if (currentMethod === 'monthly') {
+    alert('This would redirect the patient to the secure Splitit payment page.');
+  } else {
+    alert('Proceeding with payment...');
+  }
+}
+</script>
+
+</body>
+</html>

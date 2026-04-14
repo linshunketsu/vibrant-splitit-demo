@@ -1,0 +1,8 @@
+{
+  "name": "vibrant-splitit-demo",
+  "version": "1.0.0",
+  "description": "Vibrant Wellness — Splitit Pay in Installments integration demo",
+  "scripts": {
+    "dev": "npx serve ."
+  }
+}

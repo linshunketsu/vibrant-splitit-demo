@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vibrant Wellness - Provider Portal Checkout</title>
+<link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Open Sans', sans-serif; background: #f5f6fa; color: #333; font-size: 14px; }
+
+  /* ── Nav ── */
+  .topnav {
+    background: #fff; height: 56px; display: flex; align-items: center;
+    padding: 0 28px; border-bottom: 1px solid #e5e7eb; position: sticky; top: 0; z-index: 100;
+  }
+  .topnav .logo { font-weight: 700; font-size: 15px; color: #1a1a1a; display: flex; align-items: center; gap: 6px; }
+  .topnav .logo span { color: #00b4b4; }
+  .topnav nav { display: flex; gap: 28px; margin-left: 40px; }
+  .topnav nav a { text-decoration: none; color: #555; font-size: 13.5px; font-weight: 600; }
+  .topnav .right { margin-left: auto; display: flex; align-items: center; gap: 16px; }
+  .topnav .user-badge {
+    background: #00b4b4; color: #fff; padding: 5px 14px; border-radius: 16px;
+    font-size: 12px; font-weight: 600;
+  }
+  .back-home {
+    font-size: 12.5px; font-weight: 600; color: #00b4b4; text-decoration: none;
+    display: flex; align-items: center; gap: 4px; margin-right: 8px;
+    padding: 5px 10px; border-radius: 6px; border: 1px solid #c8eeee;
+    background: #f0fafa; transition: background .15s;
+  }
+  .back-home:hover { background: #e0f5f5; }
+
+  /* ── Layout ── */
+  .page { max-width: 1220px; margin: 0 auto; padding: 24px 28px 120px; display: flex; gap: 28px; }
+  .main { flex: 1; min-width: 0; }
+  .sidebar { width: 320px; flex-shrink: 0; }
+
+  /* ── Cards ── */
+  .card {
+    background: #fff; border-radius: 10px; padding: 22px 24px; margin-bottom: 20px;
+    border: 1px solid #e8eaed;
+  }
+  .card h2 { font-size: 16px; font-weight: 700; margin-bottom: 14px; color: #1a1a1a; }
+  .card h3 { font-size: 14px; font-weight: 700; margin-bottom: 10px; color: #1a1a1a; }
+
+  /* ── Patient Info ── */
+  .patient-info { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 8px 20px; font-size: 13px; }
+  .patient-info .label { color: #888; font-size: 12px; }
+  .patient-info .value { font-weight: 600; }
+  .patient-info .full { grid-column: 1 / -1; }
+
+  /* ── Delivery Kit ── */
+  .kit-row {
+    background: #f0fafa; border: 1px solid #c8eeee; border-radius: 8px;
+    padding: 12px 16px; display: flex; align-items: center; gap: 10px;
+  }
+  .kit-icon { font-size: 18px; }
+  .kit-tag {
+    background: #d4f5f5; color: #00908f; font-size: 11px; font-weight: 600;
+    padding: 2px 10px; border-radius: 10px;
+  }
+
+  /* ── Note ── */
+  .quick-add { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; font-size: 13px; color: #888; }
+  .quick-btn {
+    border: 1px solid #ddd; border-radius: 16px; padding: 4px 12px; font-size: 12px;
+    background: #fff; cursor: pointer; color: #555;
+  }
+  .choose-tpl { margin-left: auto; color: #00b4b4; font-size: 13px; font-weight: 600; cursor: pointer; text-decoration: none; }
+  textarea.note {
+    width: 100%; height: 80px; border: 1px solid #ddd; border-radius: 8px;
+    padding: 10px 14px; font-family: inherit; font-size: 13px; resize: none; color: #999;
+  }
+  .char-count { text-align: right; font-size: 11px; color: #aaa; margin-top: 4px; }
+
+  /* credit card form */
+  .cc-form { display: flex; flex-direction: column; gap: 12px; }
+  .cc-form input {
+    border: 1px solid #ddd; border-radius: 8px; padding: 11px 14px;
+    font-size: 13px; font-family: inherit; width: 100%;
+  }
+  .cc-row { display: flex; gap: 12px; }
+  .cc-row input { flex: 1; }
+
+  /* ── Installment Section ── */
+  .installment-section {
+    margin-top: 0;
+    animation: fadeSlide .35s ease;
+  }
+  @keyframes fadeSlide {
+    from { opacity: 0; transform: translateY(-8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .installment-header {
+    font-size: 14px; font-weight: 700; color: #1a1a1a; margin-bottom: 14px;
+  }
+
+  .installment-options { display: flex; gap: 12px; margin-bottom: 16px; }
+  .installment-card {
+    flex: 1; border: 2px solid #e0e3e8; border-radius: 10px; padding: 16px 14px;
+    text-align: center; cursor: pointer; transition: all .2s; background: #fff;
+    position: relative;
+  }
+  .installment-card:hover { border-color: #00b4b4; background: #f8fffe; }
+  .installment-card.selected {
+    border-color: #00b4b4; background: #f0fafa;
+    box-shadow: 0 0 0 1px #00b4b4;
+  }
+  .installment-card.selected::after {
+    content: '✓';
+    position: absolute; top: 8px; right: 10px;
+    background: #00b4b4; color: #fff; width: 20px; height: 20px;
+    border-radius: 50%; font-size: 11px; display: flex; align-items: center; justify-content: center;
+  }
+  .installment-card .period { font-size: 24px; font-weight: 700; color: #00b4b4; }
+  .installment-card .period-label { font-size: 12px; color: #888; margin-top: 2px; }
+  .installment-card .amount { font-size: 16px; font-weight: 700; color: #1a1a1a; margin-top: 10px; }
+  .installment-card .amount-label { font-size: 11px; color: #999; margin-top: 2px; }
+
+  .installment-summary {
+    background: #f8f9fb; border-radius: 8px; padding: 14px 18px;
+    font-size: 13px; color: #555; line-height: 1.7;
+  }
+  .installment-summary strong { color: #1a1a1a; }
+
+  .splitit-badge {
+    text-align: center; margin-top: 12px; font-size: 11px; color: #bbb;
+    display: flex; align-items: center; justify-content: center; gap: 4px;
+  }
+  .splitit-badge img { height: 14px; opacity: .45; }
+
+  .redirect-notice {
+    background: #fffbeb; border: 1px solid #fde68a; border-radius: 8px;
+    padding: 12px 16px; font-size: 12.5px; color: #92400e; margin-top: 14px;
+    display: flex; align-items: flex-start; gap: 8px; line-height: 1.5;
+  }
+  .redirect-notice .icon { font-size: 16px; flex-shrink: 0; margin-top: 1px; }
+
+  /* ── Price Summary ── */
+  .price-card { position: sticky; top: 76px; }
+  .price-card h2 { font-size: 16px; margin-bottom: 16px; }
+  .price-item { display: flex; justify-content: space-between; align-items: center; padding: 4px 0; }
+  .price-item .name { font-size: 13.5px; }
+  .price-item .val { font-size: 13.5px; font-weight: 600; }
+  .price-item .remove { color: #ef4444; cursor: pointer; margin-left: 6px; font-weight: 700; }
+  .price-divider { border: none; border-top: 1px solid #eee; margin: 12px 0; }
+  .price-total { display: flex; justify-content: space-between; font-size: 15px; font-weight: 700; }
+  .promo-row { display: flex; gap: 8px; margin: 14px 0; }
+  .promo-row input {
+    flex: 1; border: 1px solid #ddd; border-radius: 8px; padding: 8px 12px; font-size: 13px;
+  }
+  .promo-row button {
+    border: 1.5px solid #00b4b4; background: #fff; color: #00b4b4; border-radius: 8px;
+    padding: 8px 18px; font-weight: 600; font-size: 13px; cursor: pointer;
+  }
+  .promo-msg { font-size: 12px; color: #00b4b4; margin-bottom: 10px; }
+
+  /* installment breakdown in price summary */
+  .price-installment-info {
+    background: #f0fafa; border-radius: 8px; padding: 12px 14px; margin-top: 12px;
+    border: 1px solid #c8eeee;
+  }
+  .price-installment-info .title { font-size: 12px; font-weight: 700; color: #00908f; margin-bottom: 6px; }
+  .price-installment-info .detail { font-size: 12.5px; color: #555; line-height: 1.6; }
+  .price-installment-info .per-month { font-size: 18px; font-weight: 700; color: #00b4b4; }
+
+  /* ── Bottom Bar ── */
+  .bottom-bar {
+    position: fixed; bottom: 0; left: 0; right: 0;
+    background: #fff; border-top: 1px solid #e5e7eb; z-index: 100;
+  }
+  .steps-row {
+    display: flex; align-items: center; max-width: 1220px; margin: 0 auto; padding: 0 28px; height: 56px;
+  }
+  .back-link { color: #00b4b4; font-weight: 600; font-size: 13px; cursor: pointer; text-decoration: none; margin-right: 20px; }
+  .steps { display: flex; flex: 1; }
+  .step {
+    flex: 1; text-align: center; padding: 8px 0; font-size: 12px; font-weight: 600;
+    color: #fff; position: relative;
+  }
+  .step.done { background: #00b4b4; }
+  .step.current { background: #f0c040; color: #333; }
+  .step.upcoming { background: #e0e3e8; color: #999; }
+  .complete-btn {
+    background: #00b4b4; color: #fff; border: none; border-radius: 8px;
+    padding: 12px 28px; font-size: 14px; font-weight: 700; cursor: pointer;
+    margin-left: 20px; white-space: nowrap; transition: all .2s;
+  }
+  .complete-btn:hover { background: #009e9e; }
+  .complete-btn.redirect-btn { background: #f59e0b; color: #fff; }
+  .complete-btn.redirect-btn:hover { background: #d97706; }
+
+  .disclaimer {
+    max-width: 1220px; margin: 0 auto; padding: 6px 28px 8px; font-size: 10.5px; color: #999; line-height: 1.4;
+  }
+
+  /* ── Transition for payment sections ── */
+  .payment-section { display: none; }
+  .payment-section.active { display: block; animation: fadeSlide .3s ease; }
+
+  /* ── Tab sub-options ── */
+  .sub-toggle {
+    display: flex; gap: 0; margin-bottom: 16px; border-radius: 8px; overflow: hidden;
+    border: 1px solid #e0e3e8;
+  }
+  .sub-toggle label {
+    flex: 1; text-align: center; padding: 10px 0; font-size: 12.5px; font-weight: 600;
+    cursor: pointer; transition: all .2s; background: #f8f9fb; color: #888;
+    border-right: 1px solid #e0e3e8;
+  }
+  .sub-toggle label:last-child { border-right: none; }
+  .sub-toggle input { display: none; }
+  .sub-toggle input:checked + label {
+    background: #fff; color: #00b4b4; box-shadow: inset 0 -2px 0 #00b4b4;
+  }
+
+  /* Annotations */
+  .annotation {
+    position: relative; display: inline-block;
+  }
+  .annotation-badge {
+    position: absolute; top: -10px; right: -10px;
+    background: #ef4444; color: #fff; font-size: 10px; font-weight: 700;
+    padding: 2px 7px; border-radius: 8px; white-space: nowrap;
+    animation: pulse 2s infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.08); }
+  }
+
+  /* NEW badge */
+  .new-badge {
+    display: inline-block; background: #ef4444; color: #fff; font-size: 9px; font-weight: 700;
+    padding: 1px 6px; border-radius: 6px; margin-left: 6px; vertical-align: middle;
+    letter-spacing: .5px;
+  }
+
+  /* Highlight outline for new features */
+  .highlight-new {
+    position: relative;
+  }
+  .highlight-new::before {
+    content: '';
+    position: absolute; inset: -4px; border: 2px dashed #ef4444; border-radius: 12px;
+    pointer-events: none; animation: pulse 2s infinite;
+  }
+</style>
+</head>
+<body>
+
+<!-- ── Top Nav ── -->
+<div class="topnav">
+  <div class="logo">🧬 <span>Vibrant</span>Wellness</div>
+  <nav>
+    <a href="#">Home</a>
+    <a href="#">Patients</a>
+    <a href="#">Order</a>
+    <a href="#">Statements</a>
+    <a href="#">Education Center</a>
+    <a href="#">Tool Center ▾</a>
+  </nav>
+  <div class="right">
+    <a class="back-home" href="index.html">← Demo Home</a>
+    <span style="font-size:13px; color:#555;">🌐 EN ▾</span>
+    <span class="user-badge">Vibrant IT3 ▾</span>
+  </div>
+</div>
+
+<!-- ── Page ── -->
+<div class="page">
+
+  <!-- ── Main Column ── -->
+  <div class="main">
+
+    <!-- Patient Information -->
+    <div class="card">
+      <h2>Patient Information</h2>
+      <div class="patient-info">
+        <div><div class="label">Patient Name</div><div class="value">DEMO TEST</div></div>
+        <div><div class="label">Biological Sex</div><div class="value">Male</div></div>
+        <div><div class="label">Date of Birth</div><div class="value">02/02/1990</div></div>
+        <div><div class="label">Phone Number</div><div class="value">(123)-321 0003</div></div>
+        <div><div class="label">Height</div><div class="value">0'0"</div></div>
+        <div><div class="label">Weight</div><div class="value">0 lbs</div></div>
+        <div class="full"><div class="label">Address</div><div class="value">3100 NORTH FIRST STREET, SAN JOSE, CA, 95134, GB</div></div>
+      </div>
+    </div>
+
+    <!-- Delivery Kit -->
+    <div class="card">
+      <h2>Delivery Kit</h2>
+      <div class="kit-row">
+        <span class="kit-icon">👥</span>
+        <strong>Kits supplied by Client/Office/Phlebotomist</strong>
+        <span class="kit-tag">Urine</span>
+        <span class="kit-tag">Stool</span>
+      </div>
+    </div>
+
+    <!-- Note to Patient -->
+    <div class="card">
+      <h2>Note to Patient</h2>
+      <div class="quick-add">
+        Quick add:
+        <button class="quick-btn">📋 Patient Name</button>
+        <button class="quick-btn">📅 Date</button>
+        <button class="quick-btn">🕐 Time</button>
+        <a class="choose-tpl" href="#">Choose Template</a>
+      </div>
+      <textarea class="note" placeholder="Type your note here..."></textarea>
+      <div class="char-count">Limit of 100 characters, remaining: 100</div>
+    </div>
+
+    <!-- Payment Method -->
+    <div class="card">
+      <h2>Payment Method</h2>
+
+      <h3 style="font-size:13px; color:#888; font-weight:600; margin-bottom:16px;">Patient Pay Now - Collect Credit Card</h3>
+
+      <!-- Sub-toggle: Full Pay vs Installments -->
+      <div class="sub-toggle highlight-new" id="subToggleNow">
+        <input type="radio" name="now-sub" id="now-full" checked>
+        <label for="now-full" onclick="switchSubNow('full')">Pay in Full</label>
+        <input type="radio" name="now-sub" id="now-installment">
+        <label for="now-installment" onclick="switchSubNow('installment')">
+          Pay in Installments <span class="new-badge">NEW</span>
+        </label>
+      </div>
+
+      <!-- Full payment form (existing) -->
+      <div id="now-full-section" class="payment-section active">
+        <div class="cc-form">
+          <input type="text" placeholder="💳  Credit card number">
+          <input type="text" placeholder="Cardholder name">
+          <div class="cc-row">
+            <input type="text" placeholder="MM/YY">
+            <input type="text" placeholder="CVC">
+          </div>
+        </div>
+      </div>
+
+      <!-- Installment section (NEW) -->
+      <div id="now-installment-section" class="payment-section">
+        <div class="installment-section">
+          <div class="installment-header">Split the cost — 0% interest, no extra fees</div>
+          <div class="installment-options">
+            <div class="installment-card" onclick="selectInstallment(this, 2)" data-n="2">
+              <div class="period">2</div>
+              <div class="period-label">payments</div>
+              <div class="amount">$307.50</div>
+              <div class="amount-label">per month</div>
+            </div>
+            <div class="installment-card selected" onclick="selectInstallment(this, 3)" data-n="3">
+              <div class="period">3</div>
+              <div class="period-label">payments</div>
+              <div class="amount">$205.00</div>
+              <div class="amount-label">per month</div>
+            </div>
+            <div class="installment-card" onclick="selectInstallment(this, 4)" data-n="4">
+              <div class="period">4</div>
+              <div class="period-label">payments</div>
+              <div class="amount">$153.75</div>
+              <div class="amount-label">per month</div>
+            </div>
+          </div>
+
+          <div class="installment-summary" id="installmentSummary">
+            <strong>$205.00 per month</strong> × 3 payments = $614.99 total<br>
+            The first payment is collected today. The remaining payments are charged monthly — no interest, no hidden fees.
+          </div>
+
+          <div class="redirect-notice">
+            <span class="icon">🔒</span>
+            <span>The patient will be taken to a secure payment page to enter their card details and confirm the plan. Once complete, they'll return here automatically.</span>
+          </div>
+
+          <div class="splitit-badge">
+            Powered by Splitit
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ── Sidebar ── -->
+  <div class="sidebar">
+    <div class="card price-card">
+      <h2>Price Summary</h2>
+
+      <div class="price-item">
+        <span class="name">Gut Zoomer</span>
+        <span class="val">$550.00 <span class="remove">✕</span></span>
+      </div>
+
+      <div class="promo-row">
+        <input type="text" placeholder="🎫  Promo code">
+        <button>Apply</button>
+      </div>
+      <div class="promo-msg">🎉 Enjoy up to $400 off your first order — use code <a href="#" style="color:#00b4b4;font-weight:600;">bVibrant</a></div>
+
+      <hr class="price-divider">
+
+      <div class="price-item"><span class="name">Sub Total</span><span class="val">$550.00</span></div>
+      <div class="price-item"><span class="name">Lab Processing Fee</span><span class="val">$0.00</span></div>
+      <div class="price-item"><span class="name">International Delivery Shipping ▾</span><span class="val">$49.99</span></div>
+      <div class="price-item"><span class="name">Consultation Fee</span><span class="val">$15.00</span></div>
+      <div class="price-item"><span class="name" style="color:#aaa;">(Transaction Fee) ⓘ</span><span class="val" style="color:#aaa;">--</span></div>
+
+      <hr class="price-divider">
+      <div class="price-total">
+        <span>Total</span>
+        <span>$614.99</span>
+      </div>
+
+      <!-- Installment info in price summary (shown when installment selected) -->
+      <div class="price-installment-info" id="priceInstallmentInfo" style="display:none;">
+        <div class="title">Monthly Payment Plan</div>
+        <div class="detail">
+          <span class="per-month" id="summaryPerMonth">$205.00</span>
+          <span style="font-size:12px; color:#555;"> × <span id="summaryInstallments">3</span> months</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ── Bottom Bar ── -->
+<div class="bottom-bar">
+  <div class="steps-row">
+    <a class="back-link" href="#">‹ Back</a>
+    <div class="steps">
+      <div class="step done">Choose a patient</div>
+      <div class="step done">Place order</div>
+      <div class="step current">Check out</div>
+      <div class="step upcoming">Confirmation</div>
+    </div>
+    <button class="complete-btn" id="completeBtn">Complete Payment $614.99</button>
+  </div>
+  <div class="disclaimer">
+    In submitting this order, the individual ordering the test(s) for this patient confirms that (1) s/he has a clinical relationship with this patient and submits this order for purposes of diagnosis or treatment; and (2) s/he is acting within his/her scope of practice and is authorized under applicable state law to order the listed test(s) for this patient. By clicking Complete Payment above, you agree for your card provided here to be charged the complete amount listed to purchase testing according to <a href="#" style="color:#00b4b4;">Terms of Use</a> and <a href="#" style="color:#00b4b4;">Testing Policies</a> from Vibrant America and <a href="#" style="color:#00b4b4;">Terms of Use</a> from Vibrant Wellness.
+  </div>
+</div>
+
+<script>
+const TOTAL = 614.99;
+
+/* ── Sub-toggle within Patient Pay Now ── */
+function switchSubNow(sub) {
+  document.getElementById('now-full-section').classList.remove('active');
+  document.getElementById('now-installment-section').classList.remove('active');
+
+  if (sub === 'full') {
+    document.getElementById('now-full-section').classList.add('active');
+    resetToFullPay();
+  } else {
+    document.getElementById('now-installment-section').classList.add('active');
+    updateInstallmentUI();
+  }
+}
+
+/* ── Installment card selection ── */
+function selectInstallment(el, n) {
+  document.querySelectorAll('.installment-card').forEach(c => c.classList.remove('selected'));
+  el.classList.add('selected');
+  updateInstallmentUI();
+}
+
+function updateInstallmentUI() {
+  const selected = document.querySelector('.installment-card.selected');
+  if (!selected) return;
+  const n = parseInt(selected.dataset.n);
+  const perMonth = (TOTAL / n).toFixed(2);
+
+  // Update summary text
+  document.getElementById('installmentSummary').innerHTML =
+    `<strong>$${perMonth} per month</strong> × ${n} payments = $${TOTAL.toFixed(2)} total<br>The first payment is collected today. The remaining payments are charged monthly — no interest, no hidden fees.`;
+
+  // Update price sidebar
+  document.getElementById('priceInstallmentInfo').style.display = 'block';
+  document.getElementById('summaryInstallments').textContent = n;
+  document.getElementById('summaryPerMonth').textContent = `$${perMonth}`;
+
+  // Update button
+  const btn = document.getElementById('completeBtn');
+  btn.textContent = `Set Up ${n}-Month Plan · $${perMonth}/mo`;
+  btn.className = 'complete-btn redirect-btn';
+}
+
+function resetToFullPay() {
+  document.getElementById('priceInstallmentInfo').style.display = 'none';
+  const btn = document.getElementById('completeBtn');
+  btn.textContent = `Complete Payment $${TOTAL.toFixed(2)}`;
+  btn.className = 'complete-btn';
+}
+
+// Initialize
+switchSubNow('full');
+</script>
+
+</body>
+</html>
