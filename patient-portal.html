@@ -159,6 +159,42 @@
     letter-spacing: .5px;
   }
 
+  /* ── Info icon ── */
+  .info-btn {
+    background: none; border: none; cursor: pointer; color: var(--navy);
+    font-size: 14px; padding: 0 0 0 5px; vertical-align: middle;
+    line-height: 1; font-family: inherit; display: inline; opacity: .6;
+  }
+  .info-btn:hover { opacity: 1; }
+
+  /* ── Learn More Modal ── */
+  .modal-overlay {
+    display: none; position: fixed; inset: 0;
+    background: rgba(0,0,0,.45); z-index: 500;
+    align-items: center; justify-content: center;
+  }
+  .modal-overlay.open { display: flex; }
+  .modal-box {
+    background: var(--white); border-radius: 12px; padding: 28px 28px 22px;
+    max-width: 400px; width: 90%; position: relative;
+    box-shadow: 0 12px 40px rgba(0,0,0,.18);
+    animation: modalIn .2s ease;
+  }
+  @keyframes modalIn {
+    from { opacity: 0; transform: translateY(10px) scale(.97); }
+    to   { opacity: 1; transform: translateY(0)   scale(1); }
+  }
+  .modal-close {
+    position: absolute; top: 14px; right: 16px;
+    background: none; border: none; font-size: 20px; color: #aaa;
+    cursor: pointer; line-height: 1; padding: 0;
+  }
+  .modal-close:hover { color: #555; }
+  .modal-eyebrow { font-size: 11px; font-weight: 700; color: var(--navy); letter-spacing: .5px; margin-bottom: 6px; opacity: .6; }
+  .modal-title { font-size: 15px; font-weight: 700; color: var(--navy); margin-bottom: 10px; }
+  .modal-body { font-size: 13.5px; color: #555; line-height: 1.7; }
+  .modal-powered { font-size: 11px; color: #bbb; text-align: center; margin-top: 16px; }
+
   .pay-btn-area { margin-top: 32px; text-align: center; }
   .pay-btn {
     background: var(--navy); color: var(--white); border: none; border-radius: 10px;
@@ -207,7 +243,7 @@
     <div class="radio-card" onclick="selectMethod('monthly', this)">
       <div class="radio"></div>
       <span style="background:var(--navy-selected-bg); color:var(--navy); font-weight:800; font-size:16px; padding:4px 9px; border-radius:6px;">📅</span>
-      <span class="card-label">Pay in Installments with Vibrant Pay (recommended) <span class="new-badge">NEW</span></span>
+      <span class="card-label">Pay in Installments with Vibrant Pay (recommended) <span class="new-badge">NEW</span> <button class="info-btn" onclick="openLearnMore(event)" title="Learn more about Splitit">ⓘ</button></span>
     </div>
     <div class="radio-card" onclick="selectMethod('bnpl', this)">
       <div class="radio"></div>
@@ -271,7 +307,7 @@
 
       <div class="inst-summary" id="instSummary">
         <strong>$221.67 per month</strong> × 3 payments = $665.00 total<br>
-        Your first payment is collected today. The rest are charged monthly — no additional interest*, no additional fees.
+        First credit card charge today. The rest are charged monthly to the same card — no additional interest*, no additional fees.
       </div>
 
       <div class="inst-redirect">
@@ -340,7 +376,7 @@ function updatePlanUI() {
   const perMonth = (TOTAL / n).toFixed(2);
 
   document.getElementById('instSummary').innerHTML =
-    `<strong>$${perMonth} per month</strong> × ${n} payments = $${TOTAL.toFixed(2)} total<br>Your first payment is collected today. The rest are charged monthly — no additional interest*, no additional fees.`;
+    `<strong>$${perMonth} per month</strong> × ${n} payments = $${TOTAL.toFixed(2)} total<br>First credit card charge today. The rest are charged monthly to the same card — no additional interest*, no additional fees.`;
 
   document.getElementById('payBtn').textContent = `Set Up ${n}-Month Plan · $${perMonth}/mo`;
 }
@@ -356,7 +392,36 @@ function handlePay() {
     alert('Proceeding with payment...');
   }
 }
+
+/* ── Learn More Modal ── */
+function openLearnMore(e) {
+  e.stopPropagation();
+  e.preventDefault();
+  document.getElementById('learnMoreModal').classList.add('open');
+}
+function closeLearnMore(e) {
+  if (!e || e.target === document.getElementById('learnMoreModal')) {
+    document.getElementById('learnMoreModal').classList.remove('open');
+  }
+}
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') closeLearnMore();
+});
 </script>
+
+<!-- ── Learn More Modal ── -->
+<div class="modal-overlay" id="learnMoreModal" onclick="closeLearnMore(event)">
+  <div class="modal-box">
+    <button class="modal-close" onclick="closeLearnMore()">×</button>
+    <div class="modal-eyebrow">POWERED BY SPLITIT</div>
+    <div class="modal-title">Pay in Installments with Vibrant Pay</div>
+    <div class="modal-body">
+      <!-- Replace with one-liner from developers.splitit.com/on-site-messaging/playground -->
+      Pay over time using your existing credit card — no new account, no credit check, and no interest added. Splitit places a hold on your card for the full amount and charges each installment monthly.
+    </div>
+    <div class="modal-powered">Powered by Splitit</div>
+  </div>
+</div>
 
 </body>
 </html>
