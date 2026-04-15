@@ -326,7 +326,7 @@
         <label for="now-full" onclick="switchSubNow('full')">Pay in Full</label>
         <input type="radio" name="now-sub" id="now-installment">
         <label for="now-installment" onclick="switchSubNow('installment')">
-          Pay in Installments <span class="new-badge">NEW</span>
+          Pay in Installments with Vibrant Pay (recommended) <span class="new-badge">NEW</span>
         </label>
       </div>
 
@@ -345,7 +345,7 @@
       <!-- Installment section (NEW) -->
       <div id="now-installment-section" class="payment-section">
         <div class="installment-section">
-          <div class="installment-header">Split the cost — 0% interest, no extra fees</div>
+          <div class="installment-header">Split the cost — no additional interest*, no additional fees</div>
           <div class="installment-options">
             <div class="installment-card" onclick="selectInstallment(this, 2)" data-n="2">
               <div class="period">2</div>
@@ -369,13 +369,15 @@
 
           <div class="installment-summary" id="installmentSummary">
             <strong>$205.00 per month</strong> × 3 payments = $614.99 total<br>
-            The first payment is collected today. The remaining payments are charged monthly — no interest, no hidden fees.
+            The first payment is collected today. The remaining payments are charged monthly — no additional interest*, no additional fees.
           </div>
 
           <div class="redirect-notice">
             <span class="icon">🔒</span>
             <span>The patient will be taken to a secure payment page to enter their card details and confirm the plan. Once complete, they'll return here automatically.</span>
           </div>
+
+          <div style="font-size:11px; color:#aaa; margin-top:10px;">*Standard credit card T&amp;Cs apply.</div>
 
           <div class="splitit-badge">
             Powered by Splitit
@@ -478,7 +480,7 @@ function updateInstallmentUI() {
 
   // Update summary text
   document.getElementById('installmentSummary').innerHTML =
-    `<strong>$${perMonth} per month</strong> × ${n} payments = $${TOTAL.toFixed(2)} total<br>The first payment is collected today. The remaining payments are charged monthly — no interest, no hidden fees.`;
+    `<strong>$${perMonth} per month</strong> × ${n} payments = $${TOTAL.toFixed(2)} total<br>The first payment is collected today. The remaining payments are charged monthly — no additional interest*, no additional fees.`;
 
   // Update price sidebar
   document.getElementById('priceInstallmentInfo').style.display = 'block';

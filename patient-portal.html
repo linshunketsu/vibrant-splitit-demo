@@ -207,7 +207,7 @@
     <div class="radio-card" onclick="selectMethod('monthly', this)">
       <div class="radio"></div>
       <span style="background:var(--navy-selected-bg); color:var(--navy); font-weight:800; font-size:16px; padding:4px 9px; border-radius:6px;">📅</span>
-      <span class="card-label">Pay in Installments <span class="new-badge">NEW</span></span>
+      <span class="card-label">Pay in Installments with Vibrant Pay (recommended) <span class="new-badge">NEW</span></span>
     </div>
     <div class="radio-card" onclick="selectMethod('bnpl', this)">
       <div class="radio"></div>
@@ -271,13 +271,15 @@
 
       <div class="inst-summary" id="instSummary">
         <strong>$221.67 per month</strong> × 3 payments = $665.00 total<br>
-        Your first payment is collected today. The rest are charged monthly — no interest, no hidden fees.
+        Your first payment is collected today. The rest are charged monthly — no additional interest*, no additional fees.
       </div>
 
       <div class="inst-redirect">
         <span class="lock">🔒</span>
         <span>You'll be taken to a secure page to enter your card details and confirm the plan. Once done, you'll return here automatically.</span>
       </div>
+
+      <div style="font-size:11px; color:#aaa; margin-top:10px; text-align:center;">*Standard credit card T&amp;Cs apply.</div>
 
       <div class="inst-powered">Powered by Splitit</div>
     </div>
@@ -338,7 +340,7 @@ function updatePlanUI() {
   const perMonth = (TOTAL / n).toFixed(2);
 
   document.getElementById('instSummary').innerHTML =
-    `<strong>$${perMonth} per month</strong> × ${n} payments = $${TOTAL.toFixed(2)} total<br>Your first payment is collected today. The rest are charged monthly — no interest, no hidden fees.`;
+    `<strong>$${perMonth} per month</strong> × ${n} payments = $${TOTAL.toFixed(2)} total<br>Your first payment is collected today. The rest are charged monthly — no additional interest*, no additional fees.`;
 
   document.getElementById('payBtn').textContent = `Set Up ${n}-Month Plan · $${perMonth}/mo`;
 }
